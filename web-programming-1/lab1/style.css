@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Rules:
+     - Edit ONLY in the TASKS section
+     - No !important
+     - Do NOT edit index.html
+     - Use selectors only
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0 1.5rem 4rem;
+  background: #fdfdfb;
+  color: #1a1a1a;
+  font-family:
+    -apple-system, "Helvetica Neue", "Sukhumvit Set", "Noto Sans Thai",
+    "Noto Sans", sans-serif;
+  line-height: 1.6;
+  max-width: 50rem;
+  margin: 0 auto;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 1.2rem 0;
+  border-bottom: 2px solid #1a1a1a;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+.brand span {
+  color: #6a4c93;
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+.main-nav a {
+  color: #1b5e8a;
+  text-decoration: none;
+  padding: 0.2rem 0;
+}
+.main-nav a:hover {
+  text-decoration: underline;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+@media (max-width: 40rem) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
+article {
+  padding-right: 1rem;
+}
+article h1 {
+  font-size: 1.8rem;
+  line-height: 1.25;
+  margin: 1.5rem 0 0.8rem;
+}
+article h2 {
+  font-size: 1.35rem;
+  margin: 2rem 0 0.6rem;
+}
+article h3 {
+  font-size: 1.1rem;
+  margin: 1.4rem 0 0.4rem;
+}
+article p {
+  margin: 0 0 1rem;
+}
+article .lead {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.promo {
+  background: #f7f4ef;
+  border-left: 4px solid #6a4c93;
+  padding: 0.8rem 1.1rem;
+  margin: 1.4rem 0;
+  border-radius: 0 4px 4px 0;
+}
+.promo h3 {
+  margin-top: 0;
+}
+
+.sidebar {
+  background: #f3f1ec;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  align-self: start;
+}
+.sidebar h2 {
+  font-size: 1.1rem;
+  margin-top: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+th,
+td {
+  border: 1px solid #d8d4cc;
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+}
+thead th {
+  background: #6a4c93;
+  color: #fff;
+}
+
+.site-footer {
+  border-top: 1px solid #d8d4cc;
+  padding-top: 1rem;
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: #555;
+}
+.site-footer a {
+  color: #1b5e8a;
+}
+
+/* --------------------------------------------------------------------------
+   TASK 1 — select external links with an attribute selector
+   --------------------------------------------------------------------------
+   Goal:
+     Links whose href starts with "https" are red (color: red)
+     and show an arrow ↗ after the text via ::after
+   Don't:
+     - Add a class in the HTML (you can't edit the HTML anyway)
+     - Use !important
+   Hint:
+     - The ^= attribute operator means "starts with"
+     - Internal links start with /, external links start with https
+   Self-check:
+     - "หน้าแรก" "เกี่ยวกับเรา" "บล็อก" "ติดต่อเรา" must NOT be red
+     - "GitHub" "Facebook" must be red + show ↗
+   -------------------------------------------------------------------------- */
+
+/* TODO Task 1: write your selector and declarations here */
+
+a[href^="https"] {
+  color: red;
+}
+
+a[href^="https"]::after {
+  content: " ↗";
+}
+
+/* --------------------------------------------------------------------------
+   TASK 2 — zebra-stripe the table with a pseudo-class
+   --------------------------------------------------------------------------
+   Goal:
+     Odd rows (positions 1, 3, 5 — count data rows only, not the header)
+     have a light-grey background (background: #f3f1ec)
+   Don't:
+     - Add class="odd" or style="..." to the <tr>
+     - Use !important
+   Hint:
+     - :nth-child(odd) or :nth-child(2n+1)
+     - Careful: a plain tr:nth-child(odd) may also count the <thead><tr>
+       Use tbody tr:nth-child(odd) to target only data rows
+   Self-check:
+     - Row 1 "ศิลปะแห่งความเรียบง่าย" → grey background
+     - Row 2 "เรียนรู้จากความล้มเหลว" → white background
+     - Header row (thead) → still purple
+   -------------------------------------------------------------------------- */
+
+/* TODO Task 2: write your selector and declarations here */
+
+tbody tr:nth-child(even) {
+  background: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   TASK 3 — beat the cascade without !important
+   --------------------------------------------------------------------------
+   Existing rule (do NOT remove — it's part of the challenge):
+     The rule below is "left by a teammate"; you may only write a selector
+     with higher specificity to beat it, without touching this rule.
+   Goal:
+     Only h2.featured is green (color: green)
+     Plain h2 stays red, per the existing rule
+   Don't:
+     - Delete or edit the "article h2 { color: red }" line below
+     - Use !important
+   Hint:
+     - article h2 = (0,0,2)
+     - You need a selector with specificity ≥ (0,1,1) that matches only .featured
+     - e.g. h2.featured or article h2.featured
+   Self-check:
+     - "บทสรุป: อ่านให้คุ้มเวลา" (h2.featured) → green
+     - "ทำไมเรายังรักหนังสือ" (plain h2) → red
+   -------------------------------------------------------------------------- */
+
+/* Existing rule — do NOT edit */
+article h2 {
+  color: red;
+}
+
+/* TODO Task 3: write a selector that beats the rule above, no !important */
+
+h2.featured {
+  color: green;
+}
+
+/* --------------------------------------------------------------------------
+   TASK 4 — select with a combinator (adjacent sibling +)
+   --------------------------------------------------------------------------
+   Goal:
+     Only the first <p> immediately after each <h3> is bold (font-weight: bold)
+     Other <p> elements stay normal weight
+   Don't:
+     - Add a class to the HTML
+     - Use !important
+   Hint:
+     - The adjacent sibling combinator is +
+     - Form: A + B means the first B immediately after A (sharing a parent)
+   Self-check:
+     - In the "โปรโมชั่นสมาชิก" box: first paragraph → bold, next two → normal
+     - In the "อีเวนต์เปิดตัวหนังสือ" box: first paragraph → bold, next → normal
+   -------------------------------------------------------------------------- */
+
+/* TODO Task 4: write your selector and declarations here */
+
+h3 + p {
+  font-weight: bold;
+}
+
+/* --------------------------------------------------------------------------
+   TASK 5 — use inheritance
+   --------------------------------------------------------------------------
+   Goal:
+     Set color: #333 and font-family: Georgia, serif
+     on ONE selector so every element inside <article> gets the value
+     automatically via inheritance
+   Don't:
+     - Use the * (universal selector)
+     - Write multiple selectors (e.g. article p, article h1, article h2)
+     - Use !important
+   Hint:
+     - Every element inside article inherits from its topmost ancestor
+     - Set the value on the single container
+     - Watch out: <a> may not pick it up because the browser default has
+       a specific rule for links, but <p>, <h1>, <h2>, <h3>, <li> must change
+   -------------------------------------------------------------------------- */
+
+/* TODO Task 5: write ONE selector that propagates via inheritance */
+
+article {
+  color: #333;
+  font-family: Georgia, serif;
+}
