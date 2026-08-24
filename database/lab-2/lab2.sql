@@ -28,6 +28,7 @@ SELECT DISTINCT rating, rental_duration
 FROM film
 ORDER BY rating, rental_duration;
 
+-- คำสั่งนี้ไม่คืนข้อมูล เพราะไม่สามารถเปรียบเทียบ NULL ด้วย = ได้ ต้องใช้ IS NULL
 SELECT * FROM payment WHERE amount IS NULL;
 
 SELECT DISTINCT rental_duration 
