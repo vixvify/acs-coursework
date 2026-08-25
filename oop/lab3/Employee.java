@@ -1,9 +1,7 @@
 abstract class Employee {
-    protected Number id;
     protected String name;
 
-    Employee(Number id, String name) {
-        this.id = id;
+    Employee(String name) {
         this.name = name;
     }
 
@@ -11,17 +9,13 @@ abstract class Employee {
 
     abstract String summary();
 
-    String getName() {
-        return name;
-    }
-
 }
 
 class SalariedEmployee extends Employee {
     private double monthlySalary;
 
-    SalariedEmployee(Number id, String name, double monthlySalary) {
-        super(id, name);
+    SalariedEmployee(String name, double monthlySalary) {
+        super(name);
         if (monthlySalary < 0) {
             throw new IllegalArgumentException("Monthly salary cannot be negative");
         }
@@ -35,7 +29,7 @@ class SalariedEmployee extends Employee {
 
     @Override
     String summary() {
-        return id + " - " + name + "pay = " + calculatePay();
+        return name + "pay = " + calculatePay() + " THB";
     }
 }
 
@@ -43,8 +37,8 @@ class HourlyEmployee extends Employee {
     private double hourlyRate;
     private Number hoursWorked;
 
-    HourlyEmployee(Number id, String name, double hourlyRate, Number hoursWorked) {
-        super(id, name);
+    HourlyEmployee(String name, double hourlyRate, Number hoursWorked) {
+        super(name);
         this.hourlyRate = hourlyRate;
 
         if (hoursWorked.doubleValue() < 0 || hourlyRate < 0) {
@@ -60,7 +54,7 @@ class HourlyEmployee extends Employee {
 
     @Override
     String summary() {
-        return id + " - " + name + "pay = " + calculatePay();
+        return name + "pay = " + calculatePay() + " THB";
     }
 }
 
@@ -68,8 +62,8 @@ class PayrollApp {
     public static void main(String[] args) {
 
         Employee[] employees = {
-                new SalariedEmployee(1, "John Doe", 40000),
-                new HourlyEmployee(2, "Jane Smith", 500, 5)
+                new SalariedEmployee("John Doe", 40000),
+                new HourlyEmployee("Jane Smith", 500, 5)
         };
 
         double totalPay = 0;
