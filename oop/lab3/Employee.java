@@ -39,11 +39,11 @@ class HourlyEmployee extends Employee {
 
     HourlyEmployee(String name, double hourlyRate, Number hoursWorked) {
         super(name);
-        this.hourlyRate = hourlyRate;
 
         if (hoursWorked.doubleValue() < 0 || hourlyRate < 0) {
             throw new IllegalArgumentException("Hours worked and hourly rate cannot be negative");
         }
+        this.hourlyRate = hourlyRate;
         this.hoursWorked = hoursWorked;
     }
 
