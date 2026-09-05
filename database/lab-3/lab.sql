@@ -30,9 +30,10 @@ LEFT JOIN rental using(customer_id);
 
 use university;
 
-SELECT ID, name, sec_id
-FROM teaches 
-JOIN instructor USING(ID);
+SELECT ID, name, COUNT(sec_id)
+FROM instructor
+LEFT JOIN teaches USING(ID)
+GROUP BY ID, name;
 
 SELECT title, section.sec_id, name
 FROM instructor
