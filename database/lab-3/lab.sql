@@ -36,11 +36,11 @@ LEFT JOIN teaches USING(ID)
 GROUP BY ID, name;
 
 SELECT title, section.sec_id, name
-FROM instructor
-JOIN teaches USING(ID)
+FROM section
 JOIN course USING(course_id)
-JOIN section USING (course_id, sec_id, semester, year)
-WHERE section.semester = "Spring" AND section.year = 2010;
+LEFT JOIN teaches USING(course_id, sec_id, semester, year)
+LEFT JOIN instructor USING(ID)
+WHERE section.semester = 'Spring' AND section.year = 2010;
 
 SELECT dept_name , COUNT(ID) FROM department
 LEFT JOIN instructor USING(dept_name)
