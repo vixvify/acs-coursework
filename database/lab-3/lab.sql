@@ -14,7 +14,7 @@ FROM film
 JOIN film_actor using(film_id)
 JOIN actor using(actor_id);
 
-SELECT film.*, first_name, last_name 
+SELECT film.*
 FROM customer
 JOIN rental USING(customer_id)
 JOIN inventory USING(inventory_id)
