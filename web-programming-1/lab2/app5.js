@@ -1,9 +1,13 @@
+let count = 0;
+
 const increment = () => {
-  box.textContent = parseInt(box.textContent) + 1;
+  count++;
+  box.textContent = count;
 };
 
 const reset = () => {
-  box.textContent = 0;
+  count = 0;
+  box.textContent = count;
   if (box.classList.contains("active")) {
     box.classList.remove("active");
   }
