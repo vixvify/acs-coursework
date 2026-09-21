@@ -62,6 +62,8 @@ const setLoading = (isLoading) => {
   console.log(isLoading ? "Loading..." : "Done");
 };
 
+const SUCCESS = "fulfilled";
+
 const fetchData = async () => {
   setLoading(true);
 
@@ -78,18 +80,18 @@ const fetchData = async () => {
 
     console.log("Profile:", user);
 
-    if (notifications.status === "fulfilled") {
+    if (notifications.status === SUCCESS) {
       console.log("Notifications:", notifications);
     } else {
       console.log("Notifications: Error retrieving notification data");
     }
 
-    if (products.status === "fulfilled") {
+    if (products.status === SUCCESS) {
       console.log("Products:", products);
     } else {
       console.log("Products: Error retrieving products data");
     }
-    if (recommendations.status === "fulfilled") {
+    if (recommendations.status === SUCCESS) {
       console.log("Recommendations:", recommendations);
     } else {
       console.log("Recommendations: Error retrieving recommendations data");
