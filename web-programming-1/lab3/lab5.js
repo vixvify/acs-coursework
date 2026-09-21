@@ -66,6 +66,10 @@ const loadDashboard = async () => {
   try {
     const user = await fetchProfile();
 
+    if (!user) {
+      throw new Error("Profile not found");
+    }
+
     const results = await Promise.allSettled([
       fetchNotifications(),
       fetchProducts(),
