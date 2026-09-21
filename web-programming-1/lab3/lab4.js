@@ -4,10 +4,10 @@ const userData = [
   { id: 3, name: "Charlie" },
 ];
 
-const orderData = [
-  { id: 1, userId: 1, items: ["Order 1", "Order 2"] },
-  { id: 2, userId: 2, items: ["Order 3", "Order 4"] },
-  { id: 3, userId: 3, items: ["Order 5", "Order 6"] },
+const productsData = [
+  { id: 1, userId: 1, items: ["Product 1", "Product 2"] },
+  { id: 2, userId: 2, items: ["Product 3", "Product 4"] },
+  { id: 3, userId: 3, items: ["Product 5", "Product 6"] },
 ];
 
 const notificationData = [
@@ -16,29 +16,26 @@ const notificationData = [
   { id: 3, userId: 3, message: "Notification 3" },
 ];
 
-const getUser = () => {
-  return new Promise((resolve, reject) => {
+const getUsers = () => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(userData);
-      reject("Error retrieving data");
     }, 2000);
   });
 };
 
-const getOrders = () => {
-  return new Promise((resolve, reject) => {
+const getProducts = () => {
+  return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(orderData);
-      reject("Error retrieving orders");
+      resolve(productsData);
     }, 2000);
   });
 };
 
 const getNotifications = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(notificationData);
-      reject("Error retrieving order details");
     }, 2000);
   });
 };
@@ -50,15 +47,15 @@ const setloading = (isLoading) => {
 async function fetchData() {
   try {
     setloading(true);
-    const [users, orders, notifications] = await Promise.all([
-      getUser(),
-      getOrders(),
+    const [users, products, notifications] = await Promise.all([
+      getUsers(),
+      getProducts(),
       getNotifications(),
     ]);
 
     console.log("Users:", users);
-    console.log("Orders for user 1:", orders);
-    console.log("Notifications for user 1:", notifications);
+    console.log("Products:", products);
+    console.log("Notifications:", notifications);
   } catch {
     console.log("Error occurred while fetching data, please try again later.");
   } finally {

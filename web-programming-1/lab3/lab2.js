@@ -9,9 +9,9 @@ const checkAge = (age) => {
 };
 
 checkAge(20)
-  .then(() => {
-    console.log("อายุมากกว่า 18 ปี");
+  .then((result) => {
+    console.log(result);
   })
-  .catch(() => {
-    console.log("อายุน้อยกว่า 18 ปี");
+  .catch((error) => {
+    console.log(error);
   });

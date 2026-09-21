@@ -1,8 +1,7 @@
 const loadData = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve("Completed");
-      reject("Error");
     }, 2000);
   });
 };

@@ -22,38 +22,34 @@ const recommendationData = [
 ];
 
 const fetchProfile = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(profileData);
-      reject("Error retrieving profile data");
     }, 2000);
   });
 };
 
 const fetchNotifications = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(notificationData);
-      reject("Error retrieving notification data");
     }, 2000);
   });
 };
 
 const fetchProducts = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(productsData);
-      reject("Error retrieving products data");
     }, 2000);
   });
 };
 
 const fetchRecommendations = (userId) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       const res = recommendationData.filter((item) => item.userId === userId);
       resolve(res);
-      reject("Error retrieving recommendations data");
     }, 2000);
   });
 };
@@ -64,7 +60,7 @@ const setLoading = (isLoading) => {
 
 const SUCCESS = "fulfilled";
 
-const fetchData = async () => {
+const loadDashboard = async () => {
   setLoading(true);
 
   try {
@@ -81,18 +77,18 @@ const fetchData = async () => {
     console.log("Profile:", user);
 
     if (notifications.status === SUCCESS) {
-      console.log("Notifications:", notifications);
+      console.log("Notifications:", notifications.value);
     } else {
       console.log("Notifications: Error retrieving notification data");
     }
 
     if (products.status === SUCCESS) {
-      console.log("Products:", products);
+      console.log("Products:", products.value);
     } else {
       console.log("Products: Error retrieving products data");
     }
     if (recommendations.status === SUCCESS) {
-      console.log("Recommendations:", recommendations);
+      console.log("Recommendations:", recommendations.value);
     } else {
       console.log("Recommendations: Error retrieving recommendations data");
     }
@@ -102,3 +98,5 @@ const fetchData = async () => {
     setLoading(false);
   }
 };
+
+loadDashboard();

@@ -11,30 +11,27 @@ const orderData = [
 ];
 
 const getUser = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(userData);
-      reject("Error retrieving data");
     }, 2000);
   });
 };
 
 const getOrders = (userId) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       const res = orderData.filter((item) => item.userId === userId);
       resolve(res);
-      reject("Error retrieving orders");
     }, 2000);
   });
 };
 
 const getOrderDetails = (orderId) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       const res = orderData.find((item) => item.id === orderId);
       resolve(res);
-      reject("Error retrieving order details");
     }, 2000);
   });
 };
@@ -47,8 +44,8 @@ async function fetchData() {
   try {
     setloading(true);
     const users = await getUser();
-    const orders = await getOrders(1);
-    const orderDetails = await getOrderDetails(1);
+    const orders = await getOrders(users[0].id);
+    const orderDetails = await getOrderDetails(orders[0].id);
 
     console.log("Users:", users);
     console.log("Orders for user 1:", orders);
