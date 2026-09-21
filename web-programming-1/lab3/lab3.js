@@ -1,0 +1,63 @@
+const userData = [
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Bob" },
+  { id: 3, name: "Charlie" },
+];
+
+const orderData = [
+  { id: 1, userId: 1, items: ["Order 1", "Order 2"] },
+  { id: 2, userId: 2, items: ["Order 3", "Order 4"] },
+  { id: 3, userId: 3, items: ["Order 5", "Order 6"] },
+];
+
+const getUser = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(userData);
+      reject("Error retrieving data");
+    }, 2000);
+  });
+};
+
+const getOrders = (userId) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const res = orderData.filter((item) => item.userId === userId);
+      resolve(res);
+      reject("Error retrieving orders");
+    }, 2000);
+  });
+};
+
+const getOrderDetails = (orderId) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const res = orderData.find((item) => item.id === orderId);
+      resolve(res);
+      reject("Error retrieving order details");
+    }, 2000);
+  });
+};
+
+const setloading = (isLoading) => {
+  console.log(isLoading ? "Loading..." : "Done");
+};
+
+async function fetchData() {
+  try {
+    setloading(true);
+    const users = await getUser();
+    const orders = await getOrders(1);
+    const orderDetails = await getOrderDetails(1);
+
+    console.log("Users:", users);
+    console.log("Orders for user 1:", orders);
+    console.log("Order details for order 1:", orderDetails);
+  } catch {
+    console.log("Error occurred while fetching data, please try again later.");
+  } finally {
+    setloading(false);
+  }
+}
+
+fetchData();
