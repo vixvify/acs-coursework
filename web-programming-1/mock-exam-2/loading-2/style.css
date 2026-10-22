@@ -41,7 +41,7 @@ body {
 }
 
 .loading-3 {
-  background-color: darkgreen;
+  background-color: green;
   animation: move 1s ease-in-out infinite;
   animation-delay: 0.2s;
 }
