@@ -14,7 +14,7 @@ const handleSubmit = (event) => {
   }
 
   const el = document.createElement("li");
-  el.innerHTML = `${value} <button id="delete-btn"> Delete </button>`;
+  el.innerHTML = `${value} <button class="delete-btn" id="delete-btn"> Delete </button>`;
   list.appendChild(el);
   total += 1;
   count.innerText = `Total: ${total}`;
@@ -25,3 +25,9 @@ const handleSubmit = (event) => {
 const form = document.getElementById("student-form");
 
 form.addEventListener("submit", (event) => handleSubmit(event));
+
+list.addEventListener("click", (event) => {
+  if (event.target.classList.value === "delete-btn") {
+    event.target.closest("li").remove();
+  }
+});
