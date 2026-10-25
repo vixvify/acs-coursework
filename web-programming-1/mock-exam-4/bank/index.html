@@ -13,6 +13,25 @@
     />
   </head>
   <body>
-    <main></main>
+    <main>
+      <div class="container">
+        <div class="current-balance">
+          <p>Current Balance</p>
+          <h1 id="balance"></h1>
+        </div>
+
+        <div class="amount">
+          <p>Amount</p>
+          <input id="input" type="number" placeholder="จำนวนเงิน" />
+          <p class="error" id="error"></p>
+        </div>
+
+        <div class="action">
+          <button id="deposit">Deposit</button>
+          <button id="withdraw">Withdraw</button>
+        </div>
+      </div>
+    </main>
+    <script src="app.js"></script>
   </body>
 </html>

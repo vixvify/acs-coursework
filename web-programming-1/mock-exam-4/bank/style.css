@@ -21,3 +21,46 @@ main {
   height: 100vh;
   gap: 20px;
 }
+
+.container {
+  background-color: black;
+  color: white;
+  width: 300px;
+  height: 300px;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 10px;
+}
+
+.current-balance {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.amount input {
+  padding: 5px;
+}
+
+.action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.action button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.error {
+  font-size: 15px;
+  color: red;
+  font-weight: 600;
+}
