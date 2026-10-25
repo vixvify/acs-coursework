@@ -21,3 +21,49 @@ main {
   height: 100vh;
   gap: 20px;
 }
+
+.card {
+  width: 350px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: white;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 40px;
+  gap: 40px;
+}
+
+.card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.info button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.info button:hover {
+  transform: scale(1.05);
+}
+
+.info button:focus-visible {
+  border: 2px solid black;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+}
+
+dt::after {
+  content: ":";
+}
+
+dd {
+  font-weight: 600;
+}
