@@ -9,7 +9,6 @@ body {
 }
 
 p {
-  margin-top: 10px;
   font-size: 20px;
 }
 
@@ -20,4 +19,52 @@ main {
   align-items: center;
   height: 100vh;
   gap: 20px;
+}
+
+.accordian {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.accordian-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.btn-arrow {
+  background: none;
+  border: none;
+  font-size: 20px;
+  transform: rotate(-90deg);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.accordian-detail {
+  background-color: white;
+  display: grid;
+  grid-template-rows: 0fr;
+  min-height: 0px;
+  overflow: hidden;
+  padding: 0;
+  transition: grid-template-rows 0.3s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.accordian.active .accordian-detail {
+  padding: 10px 20px;
+  grid-template-rows: 1fr;
+}
+
+.accordian-detail p {
+  min-height: 0px;
+}
+
+.btn-active {
+  transform: rotate(90deg);
 }
