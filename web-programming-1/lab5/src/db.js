@@ -1,4 +1,5 @@
 import pg from "pg";
+import "dotenv/config";
 
 const { Pool } = pg;
 
@@ -10,7 +11,7 @@ export const pool = new Pool({
   database: process.env.DB_NAME,
   max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000
+  connectionTimeoutMillis: 2000,
 });
 
 pool.on("error", (error) => {
