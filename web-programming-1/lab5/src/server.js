@@ -9,9 +9,7 @@ app.use(express.static("public"));
 function parseCourseId(rawId) {
   const id = Number(rawId);
 
-  return Number.isSafeInteger(id) && id > 0
-    ? id
-    : null;
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
 }
 
 function validateCourse(data) {
@@ -30,7 +28,7 @@ app.get("/api/courses", async (req, res) => {
     const result = await pool.query(
       `SELECT id, name, credits
        FROM courses
-       ORDER BY id`
+       ORDER BY id`,
     );
 
     res.status(200).json(result.rows);
@@ -38,7 +36,7 @@ app.get("/api/courses", async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: "Unable to retrieve courses"
+      error: "Unable to retrieve courses",
     });
   }
 });
@@ -48,7 +46,7 @@ app.get("/api/courses/:id", async (req, res) => {
 
   if (id === null) {
     return res.status(400).json({
-      error: "Invalid course ID"
+      error: "Invalid course ID",
     });
   }
 
@@ -57,12 +55,12 @@ app.get("/api/courses/:id", async (req, res) => {
       `SELECT id, name, credits
        FROM courses
        WHERE id = $1`,
-      [id]
+      [id],
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({
-        error: "Course not found"
+        error: "Course not found",
       });
     }
 
@@ -71,7 +69,7 @@ app.get("/api/courses/:id", async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: "Unable to retrieve course"
+      error: "Unable to retrieve course",
     });
   }
 });
@@ -79,7 +77,7 @@ app.get("/api/courses/:id", async (req, res) => {
 app.post("/api/courses", async (req, res) => {
   if (!validateCourse(req.body)) {
     return res.status(400).json({
-      error: "Invalid course data"
+      error: "Invalid course data",
     });
   }
 
@@ -90,7 +88,7 @@ app.post("/api/courses", async (req, res) => {
       `INSERT INTO courses (name, credits)
        VALUES ($1, $2)
        RETURNING id, name, credits`,
-      [name.trim(), credits]
+      [name.trim(), credits],
     );
 
     res.status(201).json(result.rows[0]);
@@ -98,7 +96,82 @@ app.post("/api/courses", async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: "Unable to create course"
+      error: "Unable to create course",
+    });
+  }
+});
+
+app.put("/api/courses/:id", async (req, res) => {
+  const id = parseCourseId(req.params.id);
+
+  if (id === null) {
+    return res.status(400).json({
+      error: "Invalid course ID",
+    });
+  }
+
+  if (!validateCourse(req.body)) {
+    return res.status(400).json({
+      error: "Invalid course data",
+    });
+  }
+
+  const { name, credits } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE courses
+       SET name = $1, credits = $2
+       WHERE id = $3
+       RETURNING id, name, credits`,
+      [name.trim(), credits, id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: "Course not found",
+      });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: "Unable to update course",
+    });
+  }
+});
+
+app.delete("/api/courses/:id", async (req, res) => {
+  const id = parseCourseId(req.params.id);
+
+  if (id === null) {
+    return res.status(400).json({
+      error: "Invalid course ID",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM courses
+       WHERE id = $1
+       RETURNING id`,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: "Course not found",
+      });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: "Unable to delete course",
     });
   }
 });
