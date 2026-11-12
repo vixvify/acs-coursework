@@ -17,7 +17,11 @@ const OTP_SECRET =
 const OTP_TTL_MS = 5 * 60 * 1000;
 const MAX_OTP_ATTEMPTS = 5;
 
-if (isProduction && (SESSION_SECRET.length < 32 || OTP_SECRET.length < 32)) {
+if (
+  isProduction &&
+  (!process.env.SESSION_SECRET || !process.env.OTP_SECRET ||
+    SESSION_SECRET.length < 32 || OTP_SECRET.length < 32)
+) {
   throw new Error(
     "Production requires SESSION_SECRET and OTP_SECRET (at least 32 characters each)",
   );
@@ -165,7 +169,7 @@ app.post("/api/auth/verify-otp", async (req, res, next) => {
     const pending = req.session.pendingOtp;
     if (!pending)
       return res
-        .status(403)
+        .status(401)
         .json({ error: "ยังไม่ได้ยืนยันรหัสผ่าน กรุณา Login ใหม่" });
 
     if (Date.now() > pending.expiresAt) {
@@ -236,15 +240,18 @@ app.post("/api/auth/logout", (req, res, next) => {
 });
 
 const publicDir = path.join(__dirname, "public");
+app.get(["/profile", "/profile.html"], (req, res) => {
+  if (!req.session.user) {
+    return res.redirect(req.session.pendingOtp ? "/otp" : "/login");
+  }
+  return res.sendFile(path.join(publicDir, "profile.html"));
+});
 app.use(express.static(publicDir, { index: false }));
 app.get("/", (_req, res) => res.redirect("/login"));
 app.get("/login", (_req, res) =>
   res.sendFile(path.join(publicDir, "login.html")),
 );
 app.get("/otp", (_req, res) => res.sendFile(path.join(publicDir, "otp.html")));
-app.get("/profile", (_req, res) =>
-  res.sendFile(path.join(publicDir, "profile.html")),
-);
 app.use((error, _req, res, _next) => {
   if (error.type === "entity.parse.failed") {
     return res.status(400).json({ error: "JSON ไม่ถูกต้อง" });
