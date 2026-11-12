@@ -16,6 +16,7 @@ const OTP_SECRET =
   process.env.OTP_SECRET || "dev-only-replace-this-otp-secret-123456789";
 const OTP_TTL_MS = 5 * 60 * 1000;
 const MAX_OTP_ATTEMPTS = 5;
+const pendingOtps = new Map();
 
 if (
   isProduction &&
@@ -127,11 +128,10 @@ app.post("/api/auth/login", async (req, res, next) => {
         .json({ error: "Username หรือ Password ไม่ถูกต้อง" });
     }
 
-    await sessionRegenerate(req);
     const code = String(crypto.randomInt(0, 1_000_000)).padStart(6, "0");
+    const ref = crypto.randomBytes(32).toString("hex");
     const salt = crypto.randomBytes(16).toString("hex");
-    req.session.pendingOtp = {
-      username: demoUser.username,
+    const pending = {
       salt,
       otpHash: otpHash(code, salt),
       expiresAt: Date.now() + OTP_TTL_MS,
@@ -142,14 +142,14 @@ app.post("/api/auth/login", async (req, res, next) => {
       await sendOtp(demoUser.email, code);
     } catch (error) {
       console.error("Could not send OTP:", error.message);
-      delete req.session.pendingOtp;
-      await sessionSave(req);
       return res.status(502).json({ error: "ส่ง OTP ทางอีเมลไม่สำเร็จ" });
     }
 
-    await sessionSave(req);
+    pendingOtps.set(ref, pending);
+    setTimeout(() => pendingOtps.delete(ref), Math.max(0, pending.expiresAt - Date.now())).unref();
     return res.json({
       message: "ส่ง OTP แล้ว",
+      ref,
       email: maskEmail(demoUser.email),
     });
   } catch (error) {
@@ -157,33 +157,20 @@ app.post("/api/auth/login", async (req, res, next) => {
   }
 });
 
-app.get("/api/auth/state", (req, res) => {
-  if (req.session.user) return res.json({ stage: "authenticated" });
-  if (req.session.pendingOtp)
-    return res.json({ stage: "otp", email: maskEmail(demoUser.email) });
-  return res.status(401).json({ error: "กรุณาเข้าสู่ระบบก่อน" });
-});
-
 app.post("/api/auth/verify-otp", async (req, res, next) => {
   try {
-    const pending = req.session.pendingOtp;
+    const { ref, otp: code } = req.body || {};
+    const pending = pendingOtps.get(ref);
     if (!pending)
       return res
         .status(401)
-        .json({ error: "ยังไม่ได้ยืนยันรหัสผ่าน กรุณา Login ใหม่" });
+        .json({ error: "ไม่พบ OTP หรือ OTP หมดอายุ กรุณา Login ใหม่" });
 
-    if (Date.now() > pending.expiresAt) {
-      delete req.session.pendingOtp;
-      await sessionSave(req);
+    if (Date.now() >= pending.expiresAt) {
+      pendingOtps.delete(ref);
       return res.status(401).json({ error: "OTP หมดอายุ กรุณา Login ใหม่" });
     }
-    if (pending.attempts >= MAX_OTP_ATTEMPTS) {
-      delete req.session.pendingOtp;
-      await sessionSave(req);
-      return res.status(403).json({ error: "ลอง OTP เกินจำนวนครั้งที่กำหนด" });
-    }
 
-    const code = req.body?.otp;
     if (typeof code !== "string" || !/^\d{6}$/.test(code)) {
       return res.status(400).json({ error: "OTP ต้องเป็นตัวเลข 6 หลัก" });
     }
@@ -193,8 +180,7 @@ app.post("/api/auth/verify-otp", async (req, res, next) => {
     if (!crypto.timingSafeEqual(actualHash, expectedHash)) {
       pending.attempts += 1;
       const remaining = MAX_OTP_ATTEMPTS - pending.attempts;
-      if (remaining === 0) delete req.session.pendingOtp;
-      await sessionSave(req);
+      if (remaining === 0) pendingOtps.delete(ref);
       return res.status(remaining === 0 ? 403 : 401).json({
         error:
           remaining === 0
@@ -203,6 +189,7 @@ app.post("/api/auth/verify-otp", async (req, res, next) => {
       });
     }
 
+    pendingOtps.delete(ref);
     await sessionRegenerate(req);
     req.session.user = {
       username: demoUser.username,
@@ -218,11 +205,6 @@ app.post("/api/auth/verify-otp", async (req, res, next) => {
 
 app.get("/api/profile", (req, res) => {
   if (req.session.user) return res.json(req.session.user);
-  if (req.session.pendingOtp) {
-    return res
-      .status(401)
-      .json({ error: "ต้องยืนยัน OTP ก่อนเข้าถึง Profile" });
-  }
   return res.status(401).json({ error: "ยังไม่ได้เข้าสู่ระบบ" });
 });
 
@@ -241,7 +223,7 @@ app.post("/api/auth/logout", (req, res, next) => {
 
 app.get(["/profile", "/profile.html"], (req, res) => {
   if (!req.session.user) {
-    return res.redirect(req.session.pendingOtp ? "/otp" : "/login");
+    return res.redirect("/login");
   }
   return res.sendFile(path.join(__dirname, "profile.html"));
 });

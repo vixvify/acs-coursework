@@ -58,10 +58,12 @@ if (page === "login") {
     const password = form.elements.password.value;
     await withLoading(form.querySelector("button"), async () => {
       try {
-        await api("/api/auth/login", {
+        const data = await api("/api/auth/login", {
           method: "POST",
           body: JSON.stringify({ username, password }),
         });
+        sessionStorage.setItem("otpRef", data.ref);
+        sessionStorage.setItem("otpEmail", data.email);
         window.location.assign("/otp");
       } catch (error) {
         showError(error);
@@ -71,15 +73,12 @@ if (page === "login") {
 }
 
 if (page === "otp") {
-  api("/api/auth/state")
-    .then((data) => {
-      if (data.stage === "authenticated") {
-        window.location.replace("/profile");
-      } else if (data.email) {
-        document.getElementById("masked-email").textContent = data.email;
-      }
-    })
-    .catch(showError);
+  const ref = sessionStorage.getItem("otpRef");
+  if (!ref) {
+    window.location.replace("/login");
+  }
+  document.getElementById("masked-email").textContent =
+    sessionStorage.getItem("otpEmail") || "อีเมลของคุณ";
 
   const form = document.getElementById("otp-form");
   const otpInput = document.getElementById("otp");
@@ -93,8 +92,10 @@ if (page === "otp") {
       try {
         await api("/api/auth/verify-otp", {
           method: "POST",
-          body: JSON.stringify({ otp: otpInput.value }),
+          body: JSON.stringify({ ref, otp: otpInput.value }),
         });
+        sessionStorage.removeItem("otpRef");
+        sessionStorage.removeItem("otpEmail");
         window.location.assign("/profile");
       } catch (error) {
         showError(error);
