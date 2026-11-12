@@ -5,6 +5,8 @@ app.use(express.json());
 
 const books = [];
 
+// เมื่อ Restart Server ข้อมูลหนังสือทั้งหมดจะหายไป เพราะเก็บข้อมูลไว้ใน Array ซึ่งอยู่ใน RAM และจะถูกสร้างใหม่เป็น Array ว่าง หากต้องการเก็บข้อมูลถาวรต้องใช้ฐานข้อมูล เช่น PostgreSQL หรือ MySQL
+
 app.get("/", (req, res) => {
   res.send("Hello backend!");
 });

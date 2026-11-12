@@ -1,0 +1,11 @@
+body { font-family: sans-serif; margin: 40px auto; padding: 0 16px; max-width: 420px; line-height: 1.5; }
+label { display: block; margin-top: 16px; }
+input { box-sizing: border-box; width: 100%; padding: 8px; font: inherit; }
+button { margin: 16px 0; padding: 8px 14px; font: inherit; cursor: pointer; }
+button:disabled { cursor: wait; }
+.text-link { display: block; }
+.status { color: #a00; margin: 12px 0; }
+.status strong { display: block; }
+.profile-row { margin: 8px 0; }
+.profile-row span { display: inline-block; min-width: 100px; }
+.verified { margin-top: 16px; }
