@@ -24,7 +24,10 @@ async function api(url, options = {}) {
     response = await fetch(url, {
       ...options,
       credentials: "same-origin",
-      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
     });
   } catch (_error) {
     throw { status: 0, message: "ไม่สามารถเชื่อมต่อ Server ได้" };
@@ -39,7 +42,9 @@ async function api(url, options = {}) {
 
 function withLoading(button, operation) {
   button.disabled = true;
-  return operation().finally(() => { button.disabled = false; });
+  return operation().finally(() => {
+    button.disabled = false;
+  });
 }
 
 const page = document.body.dataset.page;
@@ -103,8 +108,9 @@ if (page === "profile") {
     .then((data) => {
       document.getElementById("profile-username").textContent = data.username;
       document.getElementById("profile-email").textContent = data.email;
-      document.getElementById("profile-time").textContent =
-        new Date(data.loggedInAt).toLocaleString("th-TH");
+      document.getElementById("profile-time").textContent = new Date(
+        data.loggedInAt,
+      ).toLocaleString("th-TH");
       document.getElementById("profile-data").hidden = false;
     })
     .catch(showError)
