@@ -175,7 +175,7 @@ app.post("/api/auth/verify-otp", async (req, res, next) => {
     if (Date.now() > pending.expiresAt) {
       delete req.session.pendingOtp;
       await sessionSave(req);
-      return res.status(403).json({ error: "OTP หมดอายุ กรุณา Login ใหม่" });
+      return res.status(401).json({ error: "OTP หมดอายุ กรุณา Login ใหม่" });
     }
     if (pending.attempts >= MAX_OTP_ATTEMPTS) {
       delete req.session.pendingOtp;
@@ -195,7 +195,7 @@ app.post("/api/auth/verify-otp", async (req, res, next) => {
       const remaining = MAX_OTP_ATTEMPTS - pending.attempts;
       if (remaining === 0) delete req.session.pendingOtp;
       await sessionSave(req);
-      return res.status(403).json({
+      return res.status(remaining === 0 ? 403 : 401).json({
         error:
           remaining === 0
             ? "OTP ผิดครบ 5 ครั้ง กรุณา Login ใหม่"
@@ -220,7 +220,7 @@ app.get("/api/profile", (req, res) => {
   if (req.session.user) return res.json(req.session.user);
   if (req.session.pendingOtp) {
     return res
-      .status(403)
+      .status(401)
       .json({ error: "ต้องยืนยัน OTP ก่อนเข้าถึง Profile" });
   }
   return res.status(401).json({ error: "ยังไม่ได้เข้าสู่ระบบ" });
