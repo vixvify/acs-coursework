@@ -239,19 +239,20 @@ app.post("/api/auth/logout", (req, res, next) => {
   });
 });
 
-const publicDir = path.join(__dirname, "public");
 app.get(["/profile", "/profile.html"], (req, res) => {
   if (!req.session.user) {
     return res.redirect(req.session.pendingOtp ? "/otp" : "/login");
   }
-  return res.sendFile(path.join(publicDir, "profile.html"));
+  return res.sendFile(path.join(__dirname, "profile.html"));
 });
-app.use(express.static(publicDir, { index: false }));
-app.get("/", (_req, res) => res.redirect("/login"));
-app.get("/login", (_req, res) =>
-  res.sendFile(path.join(publicDir, "login.html")),
+app.get(["/app.js", "/styles.css"], (req, res) =>
+  res.sendFile(path.join(__dirname, path.basename(req.path))),
 );
-app.get("/otp", (_req, res) => res.sendFile(path.join(publicDir, "otp.html")));
+app.get("/", (_req, res) => res.redirect("/login"));
+app.get(["/login", "/login.html"], (_req, res) =>
+  res.sendFile(path.join(__dirname, "login.html")),
+);
+app.get(["/otp", "/otp.html"], (_req, res) => res.sendFile(path.join(__dirname, "otp.html")));
 app.use((error, _req, res, _next) => {
   if (error.type === "entity.parse.failed") {
     return res.status(400).json({ error: "JSON ไม่ถูกต้อง" });
