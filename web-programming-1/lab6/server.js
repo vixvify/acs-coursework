@@ -6,8 +6,6 @@ const bcrypt = require("bcryptjs");
 const crypto = require("node:crypto");
 const path = require("node:path");
 const nodemailer = require("nodemailer");
-const helmet = require("helmet");
-const { rateLimit } = require("express-rate-limit");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -96,7 +94,6 @@ const cookieOptions = {
 
 if (isProduction) app.set("trust proxy", 1);
 app.disable("x-powered-by");
-app.use(helmet());
 app.use(express.json({ limit: "10kb" }));
 app.use(
   session({
@@ -107,27 +104,7 @@ app.use(
     cookie: cookieOptions,
   }),
 );
-app.use("/api", (req, res, next) => {
-  res.set("Cache-Control", "no-store");
-  if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
-    const origin = req.get("origin");
-    const expected = `${req.protocol}://${req.get("host")}`;
-    if (origin && origin !== expected) {
-      return res.status(403).json({ error: "Origin ไม่ได้รับอนุญาต" });
-    }
-  }
-  next();
-});
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 20,
-  standardHeaders: "draft-7",
-  legacyHeaders: false,
-  message: { error: "ส่งคำขอมากเกินไป กรุณาลองใหม่ภายหลัง" },
-});
-
-app.post("/api/auth/login", authLimiter, async (req, res, next) => {
+app.post("/api/auth/login", async (req, res, next) => {
   try {
     const { username, password } = req.body || {};
     if (
@@ -183,7 +160,7 @@ app.get("/api/auth/state", (req, res) => {
   return res.status(401).json({ error: "กรุณาเข้าสู่ระบบก่อน" });
 });
 
-app.post("/api/auth/verify-otp", authLimiter, async (req, res, next) => {
+app.post("/api/auth/verify-otp", async (req, res, next) => {
   try {
     const pending = req.session.pendingOtp;
     if (!pending)
@@ -268,10 +245,6 @@ app.get("/otp", (_req, res) => res.sendFile(path.join(publicDir, "otp.html")));
 app.get("/profile", (_req, res) =>
   res.sendFile(path.join(publicDir, "profile.html")),
 );
-app.use("/api", (_req, res) =>
-  res.status(404).json({ error: "ไม่พบ API ที่เรียกใช้งาน" }),
-);
-app.use((_req, res) => res.status(404).send("404 Not Found"));
 app.use((error, _req, res, _next) => {
   if (error.type === "entity.parse.failed") {
     return res.status(400).json({ error: "JSON ไม่ถูกต้อง" });
